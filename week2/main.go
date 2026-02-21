@@ -102,4 +102,31 @@ func main() {
 		Aynı şey. Farklı kelimeler.
 
 	*/
+
+	/*
+		PACKAGE STRUCTURE
+
+		fonksiyonların erişimi javadakinden daha basittir.
+		Go'da bir fonksiyonun erişilebilir olup olmadığı, fonksiyonun adının büyük harfle başlayıp başlamadığına bağlıdır.
+		Büyük harfle başlayan fonksiyonlar (örneğin, Add) diğer paketlerden erişilebilir (public), küçük harfle başlayan fonksiyonlar (örneğin, add) sadece tanımlandıkları paket içinde erişilebilir (private).
+
+		paket yapısı-> go da her klasör bir pakettir. o klasörün içindeki tüm go dosyaları aynı pakete aittir. bu paketler birbirleriyle iletişim kurabilirler. java da ise package'lar klasör yapısına göre belirlenir ama go da klasör yapısı değil, package keyword'ü belirler.
+
+
+		mathutils.Pi            // ✓ büyük P
+		mathutils.Add(1, 2)     // ✓ büyük A
+		mathutils.calculateSecret() // ✗ compiler error — küçük c
+		```
+
+		---
+
+		## Özet
+		```
+		Java         →   Go
+		──────────────────────
+		public       →   BüyükHarf
+		private      →   küçükHarf
+		protected    →   yok
+		package-priv →   yok
+	*/
 }
