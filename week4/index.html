@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Go OOP — Java Developer Rehberi</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --go-blue: #00ACD7;
+    --go-light: #5DC9E2;
+    --java-orange: #F89820;
+    --java-red: #E76F00;
+    --bg: #0A0E17;
+    --surface: #111827;
+    --surface2: #1A2236;
+    --border: #1E2D45;
+    --text: #E2E8F0;
+    --muted: #64748B;
+    --green: #34D399;
+    --purple: #A78BFA;
+    --pink: #F472B6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,172,215,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,172,215,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* HERO */
+  .hero {
+    padding: 60px 0 40px;
+    text-align: center;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,172,215,0.1);
+    border: 1px solid rgba(0,172,215,0.3);
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 12px;
+    color: var(--go-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 800;
+    line-height: 1.05;
+    background: linear-gradient(135deg, #fff 0%, var(--go-blue) 50%, var(--go-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--muted);
+    font-weight: 400;
+    max-width: 560px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+
+  .hero-sub span {
+    color: var(--java-orange);
+    font-weight: 600;
+  }
+
+  /* NAV PILLS */
+  .nav-pills {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 56px;
+  }
+
+  .nav-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .nav-pill:hover, .nav-pill.active {
+    border-color: var(--go-blue);
+    color: var(--go-blue);
+    background: rgba(0,172,215,0.08);
+  }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    animation: fadeIn 0.4s ease;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    margin-bottom: 32px;
+  }
+
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--go-blue);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.2;
+  }
+
+  .section-desc {
+    margin-top: 12px;
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 15px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+  }
+
+  /* COMPARE CARD */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  @media (max-width: 700px) {
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+  .lang-card {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .lang-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .lang-card.java .lang-card-header {
+    background: rgba(248,152,32,0.15);
+    border-bottom: 2px solid var(--java-orange);
+    color: var(--java-orange);
+  }
+
+  .lang-card.go .lang-card-header {
+    background: rgba(0,172,215,0.15);
+    border-bottom: 2px solid var(--go-blue);
+    color: var(--go-blue);
+  }
+
+  .lang-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+  .java .lang-dot { background: var(--java-orange); }
+  .go .lang-dot { background: var(--go-blue); }
+
+  pre {
+    background: #080C14;
+    padding: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  /* SYNTAX HIGHLIGHTING */
+  .kw { color: #C792EA; }         /* keywords */
+  .type { color: var(--go-blue); } /* types */
+  .str { color: var(--green); }    /* strings */
+  .cmt { color: #546E7A; font-style: italic; } /* comments */
+  .fn { color: #FFCB6B; }         /* functions */
+  .num { color: #F78C6C; }        /* numbers */
+  .field { color: var(--text); }
+  .pkg { color: var(--java-orange); }
+
+  /* CALLOUT BOXES */
+  .callout {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14px;
+    line-height: 1.6;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+  }
+
+  .callout-icon { font-size: 20px; flex-shrink: 0; }
+
+  .callout.info {
+    background: rgba(0,172,215,0.08);
+    border: 1px solid rgba(0,172,215,0.25);
+    color: #93C5FD;
+  }
+
+  .callout.warning {
+    background: rgba(248,152,32,0.08);
+    border: 1px solid rgba(248,152,32,0.25);
+    color: #FCD34D;
+  }
+
+  .callout.success {
+    background: rgba(52,211,153,0.08);
+    border: 1px solid rgba(52,211,153,0.25);
+    color: var(--green);
+  }
+
+  .callout.danger {
+    background: rgba(244,114,182,0.08);
+    border: 1px solid rgba(244,114,182,0.25);
+    color: var(--pink);
+  }
+
+  /* CONCEPT CARDS */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+  }
+
+  .concept-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.25s;
+  }
+
+  .concept-card:hover {
+    border-color: var(--go-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,172,215,0.1);
+  }
+
+  .concept-card h3 {
+    font-size: 16px;
+    color: #fff;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .concept-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+
+  /* TABLE */
+  .diff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 20px 0;
+  }
+
+  .diff-table th {
+    text-align: left;
+    padding: 10px 16px;
+    background: var(--surface2);
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 11px;
+  }
+
+  .diff-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    line-height: 1.5;
+    vertical-align: top;
+  }
+
+  .diff-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .tag-java {
+    display: inline-block;
+    background: rgba(248,152,32,0.15);
+    color: var(--java-orange);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .tag-go {
+    display: inline-block;
+    background: rgba(0,172,215,0.15);
+    color: var(--go-blue);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* MENTAL MODEL */
+  .mental-model {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--purple);
+    border-radius: 0 12px 12px 0;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+
+  .mental-model h4 {
+    color: var(--purple);
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .mental-model p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #CBD5E1;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 300;
+  }
+
+  /* INLINE CODE */
+  code {
+    background: rgba(0,172,215,0.12);
+    color: var(--go-blue);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+  }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    padding: 48px 0;
+    color: var(--muted);
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* SCROLL INDICATOR */
+  .progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--go-blue), var(--go-light));
+    transition: width 0.1s;
+    z-index: 100;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">☕ → 🐹 &nbsp; Java'dan Go'ya</div>
+    <h1>Object-Oriented Go</h1>
+    <p class="hero-sub">
+      Go'da OOP'yi anla — <span>Java zihinsel modelinle</span> karşılaştırmalı bir rehber
+    </p>
+
+    <nav class="nav-pills">
+      <button class="nav-pill active" onclick="show('structs')">01 Structs</button>
+      <button class="nav-pill" onclick="show('composition')">02 Composition</button>
+      <button class="nav-pill" onclick="show('methods')">03 Methods & Receivers</button>
+      <button class="nav-pill" onclick="show('interfaces')">04 Interfaces</button>
+      <button class="nav-pill" onclick="show('di')">05 Dependency Injection</button>
+    </nav>
+  </div>
+
+  <!-- ===== SECTION 1: STRUCTS ===== -->
+  <div class="section active" id="structs">
+    <div class="section-header">
+      <div class="section-tag">01 / Structs</div>
+      <div class="section-title">Java'daki Class = Go'daki Struct</div>
+      <p class="section-desc">Go'da struct, Java'daki class'ın veri taşıyan yarısıdır. Behavior (davranış) ayrı olarak method'larla eklenir.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="lang-card java">
+        <div class="lang-card-header">
+          <div class="lang-dot"></div>
+          Java — Class
+        </div>
+        <pre>
+<span class="kw">public class</span> <span class="type">User</span> {
+    <span class="kw">private int</span> id;
+    <span class="kw">private</span> <span class="type">String</span> username;
+    <span class="kw">private</span> <span class="type">String</span> email;
+    <span class="kw">private boolean</span> isActive;
+
+    <span class="cmt">// Constructor</span>
+    <span class="kw">public</span> <span class="fn">User</span>(<span class="kw">int</span> id, <span class="type">String</span> username) {
+        <span class="kw">this</span>.id = id;
+        <span class="kw">this</span>.username = username;
+        <span class="kw">this</span>.isActive = <span class="kw">true</span>;
+    }
+}</pre>
+      </div>
+      <div class="lang-card go">
+        <div class="lang-card-header">
+          <div class="lang-dot"></div>
+          Go — Struct
+        </div>
+        <pre>
+<span class="kw">type</span> <span class="type">User</span> <span class="kw">struct</span> {
+    ID       <span class="kw">int</span>
+    Username <span class="kw">string</span>
+    Email    <span class="kw">string</span>
+    IsActive <span class="kw">bool</span>
+}
+
+<span class="cmt">// Constructor yok — factory function kullanılır</span>
+<span class="kw">func</span> <span class="fn">NewUser</span>(id <span class="kw">int</span>, username <span class="kw">string</span>) <span class="type">User</span> {
+    <span class="kw">return</span> <span class="type">User</span>{
+        ID: id, Username: username, IsActive: <span class="kw">true</span>,
+    }
+}</pre>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">💡</span>
+      <div><strong>Constructor yok!</strong> Go'da özel bir constructor sözdizimi yoktur. Bunun yerine convention olarak <code>NewXxx()</code> adlı factory function'lar kullanılır. Java'daki <code>new User()</code> çağrısının karşılığıdır.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-size:18px; margin-bottom:16px; color:#fff;">Initialization Stilleri</h3>
+
+    <div class="compare-grid">
+      <div class="lang-card java">
+        <div class="lang-card-header"><div class="lang-dot"></div>Java</div>
+        <pre>
+<span class="cmt">// new keyword zorunlu</span>
+<span class="type">User</span> u1 = <span class="kw">new</span> <span class="fn">User</span>(<span class="num">1</span>, <span class="str">"alice"</span>);
+
+<span class="cmt">// null (Java'da default referans)</span>
+<span class="type">User</span> u2 = <span class="kw">null</span>;</pre>
+      </div>
+      <div class="lang-card go">
+        <div class="lang-card-header"><div class="lang-dot"></div>Go</div>
+        <pre>
+<span class="cmt">// Named fields ile literal</span>
+u1 := <span class="type">User</span>{ID: <span class="num">1</span>, Username: <span class="str">"alice"</span>}
+
+<span class="cmt">// Zero value — tüm alanlar sıfırlanır</span>
+<span class="cmt">// 0, "", false, nil</span>
+<span class="kw">var</span> u2 <span class="type">User</span>
+
+<span class="cmt">// Pointer ile</span>
+u3 := &<span class="type">User</span>{ID: <span class="num">2</span>, Username: <span class="str">"bob"</span>}</pre>
+      </div>
+    </div>
+
+    <div class="mental-model">
+      <h4>🧠 Zihinsel Model</h4>
+      <p>Java'da bir object yaratmak için her zaman <code>new</code> kullanmak zorundasın ve bellek heap'te allocate edilir. Go'da ise bir struct değeri (value) stack'te de yaşayabilir. <code>&User{}</code> dersen pointer alırsın ve heap'e gider — ama bu kararı genellikle compiler optimize eder (escape analysis). Stack vs Heap ayrımı Go'da sana daha şeffaftır.</p>
+    </div>
+
+    <div class="concept-grid">
+      <div class="concept-card">
+        <h3>🔒 Erişim Kontrolü</h3>
+        <p>Java: <code>private/public/protected</code>. Go: büyük harf = exported (public), küçük harf = unexported (package-private). <code>private</code> keyword'ü yok.</p>
+      </div>
+      <div class="concept-card">
+        <h3>⚡ Zero Value</h3>
+        <p>Go'da tüm tipler için anlamlı bir zero value vardır. <code>int → 0</code>, <code>string → ""</code>, <code>bool → false</code>. NullPointerException korkusu yok!</p>
+      </div>
+      <div class="concept-card">
+        <h3>📦 Paket Sistemi</h3>
+        <p>Java'daki class-level encapsulation yerine Go package-level encapsulation kullanır. Aynı paketteki tüm dosyalar unexported alanları görebilir.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 2: COMPOSITION ===== -->
+  <div class="section" id="composition">
+    <div class="section-header">
+      <div class="section-tag">02 / Composition</div>
+      <div class="section-title">Inheritance Yok, Composition Var</div>
+      <p class="section-desc">Java'da <code>extends</code> ile kalıtım kurarsın. Go bunu kasıtlı olarak reddeder. Bunun yerine struct embedding kullanılır.</p>
+    </div>
+
+    <div class="callout danger">
+      <span class="callout-icon">🚫</span>
+      <div><strong>Go'da <code>extends</code> yoktur.</strong> <code>class BlogPost extends Author</code> gibi bir şey yazamazsın. Go ekibi bunu bilinçli bir tasarım kararı olarak almıştır. "is-a" ilişkisi yerine "has-a" ilişkisini tercih ederler.</div>
+    </div>
+
+    <div class="compare-grid">
+      <div class="lang-card java">
+        <div class="lang-card-header"><div class="lang-dot"></div>Java — Inheritance (is-a)</div>
+        <pre>
+<span class="kw">public class</span> <span class="type">Author</span> {
+    <span class="kw">public</span> <span class="type">String</span> fullName;
+    <span class="kw">public</span> <span class="type">String</span> bio;
+}
+
+<span class="cmt">// BlogPost IS-A Author (kalıtım)</span>
+<span class="kw">public class</span> <span class="type">BlogPost</span> <span class="kw">extends</span> <span class="type">Author</span> {
+    <span class="kw">public</span> <span class="type">String</span> title;
+    <span class="kw">public</span> <span class="type">String</span> content;
+}
+
+<span class="cmt">// Kullanım</span>
+<span class="type">BlogPost</span> post = <span class="kw">new</span> <span class="fn">BlogPost</span>();
+post.fullName = <span class="str">"Grace Hopper"</span>; <span class="cmt">// inherited</span></pre>
+      </div>
+      <div class="lang-card go">
+        <div class="lang-card-header"><div class="lang-dot"></div>Go — Embedding (has-a, promoted)</div>
+        <pre>
+<span class="kw">type</span> <span class="type">Author</span> <span class="kw">struct</span> {
+    FullName <span class="kw">string</span>
+    Bio      <span class="kw">string</span>
+}
+
+<span class="cmt">// BlogPost HAS-AN Author (gömülü)</span>
+<span class="kw">type</span> <span class="type">BlogPost</span> <span class="kw">struct</span> {
+    <span class="type">Author</span>   <span class="cmt">// anonymous embed — promotion!</span>
+    Title   <span class="kw">string</span>
+    Content <span class="kw">string</span>
+}
+
+<span class="cmt">// Kullanım — promoted field'a direkt eriş</span>
+post.FullName = <span class="str">"Grace Hopper"</span>
+<span class="cmt">// ya da explicit:</span>
+post.Author.FullName = <span class="str">"Grace Hopper"</span></pre>
+      </div>
+    </div>
+
+    <div class="callout success">
+      <span class="callout-icon">✨</span>
+      <div><strong>Field Promotion!</strong> Anonymous (isimsiz) bir struct embed ettiğinde, iç struct'ın field ve method'ları dış struct'a "promote" olur. Yani <code>post.FullName</code> yazabilirsin, <code>post.Author.FullName</code> yazmak zorunda değilsin. Java'daki <code>super.field</code> mantığına benzer ama daha doğal görünür.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-size:18px; margin-bottom:16px; color:#fff;">Çoklu Composition — Java'da Mümkün Değil!</h3>
+
+    <div class="lang-card go" style="margin-bottom:20px;">
+      <div class="lang-card-header"><div class="lang-dot"></div>Go — Birden fazla struct embed etmek</div>
+      <pre>
+<span class="kw">type</span> <span class="type">Timestamps</span> <span class="kw">struct</span> {
+    CreatedAt <span class="type">time.Time</span>
+    UpdatedAt <span class="type">time.Time</span>
+}
+
+<span class="kw">type</span> <span class="type">Auditable</span> <span class="kw">struct</span> {
+    CreatedBy <span class="kw">string</span>
+    UpdatedBy <span class="kw">string</span>
+}
+
+<span class="cmt">// İKİ struct'ı aynı anda embed edebilirsin</span>
+<span class="cmt">// Java'da multiple inheritance YASAK — Go'da sorun yok!</span>
+<span class="kw">type</span> <span class="type">Article</span> <span class="kw">struct</span> {
+    <span class="type">Timestamps</span>  <span class="cmt">// promoted: article.CreatedAt</span>
+    <span class="type">Auditable</span>   <span class="cmt">// promoted: article.CreatedBy</span>
+    Title <span class="kw">string</span>
+    Body  <span class="kw">string</span>
+}</pre>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠️</span>
+      <div><strong>Diamond Problem yok!</strong> Java multiple inheritance'ı yasaklar çünkü diamond problem'e yol açar. Go embedding'de eğer iki embed'de aynı isimde field/method varsa, compiler seni uyarır ve explicit erişim zorunlu olur. Otomatik çözüm yok — sen karar verirsin.</div>
+    </div>
+
+    <table class="diff-table">
+      <tr>
+        <th>Özellik</th>
+        <th><span class="tag-java">Java</span></th>
+        <th><span class="tag-go">Go</span></th>
+      </tr>
+      <tr>
+        <td>Kalıtım</td>
+        <td><code>extends</code> ile tek sınıftan</td>
+        <td>Yok — struct embedding kullan</td>
+      </tr>
+      <tr>
+        <td>Multiple Inheritance</td>
+        <td>Yasak (interface hariç)</td>
+        <td>Çoklu embedding ile mümkün</td>
+      </tr>
+      <tr>
+        <td>super keyword</td>
+        <td>Var, parent'a erişim sağlar</td>
+        <td>Yok — <code>struct.EmbeddedType.Field</code></td>
+      </tr>
+      <tr>
+        <td>Override</td>
+        <td><code>@Override</code> annotation</td>
+        <td>Aynı isimde method tanımla (shadowing)</td>
+      </tr>
+      <tr>
+        <td>İlişki tipi</td>
+        <td>is-a (BlogPost IS-A Author)</td>
+        <td>has-a (BlogPost HAS-AN Author)</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 3: METHODS ===== -->
+  <div class="section" id="methods">
+    <div class="section-header">
+      <div class="section-tag">03 / Methods & Receivers</div>
+      <div class="section-title">Pointer vs Value Receiver</div>
+      <p class="section-desc">Go'da method'lar struct'ın içinde değil, dışında tanımlanır. Ve <strong>receiver tipi</strong> seçimi kritik öneme sahiptir.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="lang-card java">
+        <div class="lang-card-header"><div class="lang-dot"></div>Java — Instance Method</div>
+        <pre>
+<span class="kw">public class</span> <span class="type">BankAccount</span> {
+    <span class="kw">private double</span> balance;
+
+    <span class="cmt">// Method class içinde tanımlanır</span>
+    <span class="cmt">// 'this' implicit olarak pass edilir</span>
+    <span class="kw">public void</span> <span class="fn">deposit</span>(<span class="kw">double</span> amount) {
+        <span class="kw">this</span>.balance += amount; <span class="cmt">// state değişir</span>
+    }
+
+    <span class="kw">public double</span> <span class="fn">getBalance</span>() {
+        <span class="kw">return this</span>.balance; <span class="cmt">// okuma</span>
+    }
+}</pre>
+      </div>
+      <div class="lang-card go">
+        <div class="lang-card-header"><div class="lang-dot"></div>Go — Method with Receiver</div>
+        <pre>
+<span class="kw">type</span> <span class="type">BankAccount</span> <span class="kw">struct</span> {
+    balance <span class="kw">float64</span>
+}
+
+<span class="cmt">// POINTER receiver — state değiştiriyor!</span>
+<span class="cmt">// *BankAccount = Java'daki 'this' gibi</span>
+<span class="kw">func</span> (a *<span class="type">BankAccount</span>) <span class="fn">Deposit</span>(amount <span class="kw">float64</span>) {
+    a.balance += amount
+}
+
+<span class="cmt">// VALUE receiver — sadece okuma</span>
+<span class="kw">func</span> (a <span class="type">BankAccount</span>) <span class="fn">GetBalance</span>() <span class="kw">float64</span> {
+    <span class="kw">return</span> a.balance
+}</pre>
+      </div>
+    </div>
+
+    <div class="mental-model">
+      <h4>🧠 Receiver = Java'daki "this"</h4>
+      <p>Java'da <code>this</code> her zaman nesnenin referansıdır (pointer). Go'da ise seçim yapman gerekir: <code>*T</code> (pointer receiver) ile Java'daki gibi orijinal nesneyi değiştirebilirsin. <code>T</code> (value receiver) ile ise metodun bir kopyası üzerinde çalışırsın — orijinal değişmez. Java'da bu ayrım yoktur çünkü objeler zaten referans tipindedir.</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-size:18px; margin-bottom:16px; color:#fff;">Ne Zaman Hangisini Kullanmalı?</h3>
+
+    <div class="concept-grid">
+      <div class="concept-card" style="border-left: 3px solid var(--go-blue);">
+        <h3>🖊️ Pointer Receiver <code>*T</code></h3>
+        <p>State değiştiriyorsan — <code>a.balance += amount</code> gibi. Struct büyükse (kopyalama pahalı). Tutarlılık için: struct'ın diğer method'ları pointer receiver kullanıyorsa sen de kullan.</p>
+      </div>
+      <div class="concept-card" style="border-left: 3px solid var(--green);">
+        <h3>📖 Value Receiver <code>T</code></h3>
+        <p>Sadece okuma yapıyorsan. Küçük, immutable struct'larda — <code>time.Time</code> gibi. Fonksiyonel, side-effect'siz davranış istiyorsan.</p>
+      </div>
+    </div>
+
+    <div class="lang-card go" style="margin:20px 0">
+      <div class="lang-card-header"><div class="lang-dot"></div>Kritik Tuzak — Value Receiver ile State Değiştirme</div>
+      <pre>
+<span class="kw">type</span> <span class="type">Counter</span> <span class="kw">struct</span> { count <span class="kw">int</span> }
+
+<span class="cmt">// ❌ YANLIŞ: Value receiver — kopya üzerinde çalışır!</span>
+<span class="kw">func</span> (c <span class="type">Counter</span>) <span class="fn">WrongIncrement</span>() {
+    c.count++ <span class="cmt">// SADECE KOPYA değişir, orijinal değişmez!</span>
+}
+
+<span class="cmt">// ✅ DOĞRU: Pointer receiver</span>
+<span class="kw">func</span> (c *<span class="type">Counter</span>) <span class="fn">Increment</span>() {
+    c.count++ <span class="cmt">// Orijinal struct değişir</span>
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    c := <span class="type">Counter</span>{}
+    c.<span class="fn">WrongIncrement</span>()
+    <span class="pkg">fmt</span>.<span class="fn">Println</span>(c.count) <span class="cmt">// → 0  (değişmedi!)</span>
+    c.<span class="fn">Increment</span>()
+    <span class="pkg">fmt</span>.<span class="fn">Println</span>(c.count) <span class="cmt">// → 1  ✓</span>
+}</pre>
+    </div>
+
+    <div class="callout warning">
+      <span class="callout-icon">☕</span>
+      <div><strong>Java Developer Tuzağı:</strong> Java'da tüm nesneler referans tipidir. <code>account.deposit(100)</code> her zaman orijinal nesneyi değiştirir. Go'da bunu varsayamazsın! Value receiver kullandıysan değişiklik kaybolur. Bu Go'da en sık yapılan hatalardan biridir.</div>
+    </div>
+  </div>
+
+  <!-- ===== SECTION 4: INTERFACES ===== -->
+  <div class="section" id="interfaces">
+    <div class="section-header">
+      <div class="section-tag">04 / Interfaces</div>
+      <div class="section-title">Implicit Interface — Go'nun En Güçlü Özelliği</div>
+      <p class="section-desc">Java'da interface'i implement etmek için <code>implements</code> yazman gerekir. Go'da ise hiçbir şey yazmazsın — method imzaları uyuşuyorsa otomatik olarak implement edilmiş sayılır.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="lang-card java">
+        <div class="lang-card-header"><div class="lang-dot"></div>Java — Explicit Implementation</div>
+        <pre>
+<span class="kw">public interface</span> <span class="type">Animal</span> {
+    <span class="type">String</span> <span class="fn">Sound</span>();
+    <span class="type">String</span> <span class="fn">Name</span>();
+}
+
+<span class="cmt">// 'implements' ZORUNLU — aksi halde hata</span>
+<span class="kw">public class</span> <span class="type">Dog</span> <span class="kw">implements</span> <span class="type">Animal</span> {
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">Sound</span>() { <span class="kw">return</span> <span class="str">"Woof"</span>; }
+    <span class="kw">public</span> <span class="type">String</span> <span class="fn">Name</span>()  { <span class="kw">return</span> <span class="str">"Dog"</span>; }
+}
+
+<span class="cmt">// Dog Animal interface'ini implement ediyor</span>
+<span class="type">Animal</span> a = <span class="kw">new</span> <span class="fn">Dog</span>();</pre>
+      </div>
+      <div class="lang-card go">
+        <div class="lang-card-header"><div class="lang-dot"></div>Go — Implicit (Duck Typing)</div>
+        <pre>
+<span class="kw">type</span> <span class="type">Animal</span> <span class="kw">interface</span> {
+    <span class="fn">Sound</span>() <span class="kw">string</span>
+    <span class="fn">Name</span>()  <span class="kw">string</span>
+}
+
+<span class="cmt">// 'implements Animal' yazmıyoruz!</span>
+<span class="kw">type</span> <span class="type">Dog</span> <span class="kw">struct</span>{}
+
+<span class="kw">func</span> (d <span class="type">Dog</span>) <span class="fn">Sound</span>() <span class="kw">string</span> { <span class="kw">return</span> <span class="str">"Woof"</span> }
+<span class="kw">func</span> (d <span class="type">Dog</span>) <span class="fn">Name</span>()  <span class="kw">string</span> { <span class="kw">return</span> <span class="str">"Dog"</span>  }
+
+<span class="cmt">// Dog otomatik olarak Animal'dır!</span>
+<span class="kw">var</span> a <span class="type">Animal</span> = <span class="type">Dog</span>{} <span class="cmt">// ✓ çalışır</span></pre>
+      </div>
+    </div>
+
+    <div class="mental-model">
+      <h4>🦆 Duck Typing — "Ördek gibi yürüyorsa, ördek gibi vaklıyorsa..."</h4>
+      <p>Go'nun interface'i "duck typing" prensibine dayanır. Bir tip, bir interface'in tüm method'larını implement ediyorsa, o interface'i satisfy eder — bunu hiçbir yerde belirtmene gerek yoktur. Bu, Java'nın nominal typing'ine karşın structural typing'dir. Avantajı: bir kütüphaneyi değiştirmeden onun tiplerine kendi interface'ini uygulayabilirsin!</p>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-size:18px; margin-bottom:16px; color:#fff;">Polymorphism Örneği</h3>
+
+    <div class="lang-card go" style="margin-bottom:20px;">
+      <div class="lang-card-header"><div class="lang-dot"></div>Go — Interface ile Polymorphism</div>
+      <pre>
+<span class="kw">type</span> <span class="type">Shape</span> <span class="kw">interface</span> {
+    <span class="fn">Area</span>()      <span class="kw">float64</span>
+    <span class="fn">Perimeter</span>() <span class="kw">float64</span>
+}
+
+<span class="kw">type</span> <span class="type">Rectangle</span> <span class="kw">struct</span> { Width, Height <span class="kw">float64</span> }
+<span class="kw">type</span> <span class="type">Circle</span>    <span class="kw">struct</span> { Radius <span class="kw">float64</span> }
+
+<span class="kw">func</span> (r <span class="type">Rectangle</span>) <span class="fn">Area</span>()      <span class="kw">float64</span> { <span class="kw">return</span> r.Width * r.Height }
+<span class="kw">func</span> (r <span class="type">Rectangle</span>) <span class="fn">Perimeter</span>() <span class="kw">float64</span> { <span class="kw">return</span> <span class="num">2</span> * (r.Width + r.Height) }
+<span class="kw">func</span> (c <span class="type">Circle</span>)    <span class="fn">Area</span>()      <span class="kw">float64</span> { <span class="kw">return</span> <span class="pkg">math</span>.Pi * c.Radius * c.Radius }
+<span class="kw">func</span> (c <span class="type">Circle</span>)    <span class="fn">Perimeter</span>() <span class="kw">float64</span> { <span class="kw">return</span> <span class="num">2</span> * <span class="pkg">math</span>.Pi * c.Radius }
+
+<span class="cmt">// Java'daki List&lt;Shape&gt; shapes gibi!</span>
+<span class="kw">func</span> <span class="fn">PrintShapeInfo</span>(shapes []<span class="type">Shape</span>) {
+    <span class="kw">for</span> _, s := <span class="kw">range</span> shapes {
+        <span class="pkg">fmt</span>.<span class="fn">Printf</span>(<span class="str">"Area: %.2f, Perimeter: %.2f\n"</span>,
+            s.<span class="fn">Area</span>(), s.<span class="fn">Perimeter</span>())
+    }
+}
+
+<span class="kw">func</span> <span class="fn">main</span>() {
+    shapes := []<span class="type">Shape</span>{
+        <span class="type">Rectangle</span>{Width: <span class="num">5</span>, Height: <span class="num">3</span>},
+        <span class="type">Circle</span>{Radius: <span class="num">4</span>},
+    }
+    <span class="fn">PrintShapeInfo</span>(shapes) <span class="cmt">// polymorphic dispatch!</span>
+}</pre>
+    </div>
+
+    <table class="diff-table">
+      <tr>
+        <th>Özellik</th>
+        <th><span class="tag-java">Java</span></th>
+        <th><span class="tag-go">Go</span></th>
+      </tr>
+      <tr>
+        <td>Implementation Bildirimi</td>
+        <td><code>implements Foo</code> zorunlu</td>
+        <td>Yok — implicit (structural typing)</td>
+      </tr>
+      <tr>
+        <td>Retroactive Implementation</td>
+        <td>İmkansız (class'ı değiştirmen gerek)</td>
+        <td>Mümkün! Başka paketteki tiplere uygulanabilir</td>
+      </tr>
+      <tr>
+        <td>Interface Field</td>
+        <td>Constant field'lar olabilir</td>
+        <td>Sadece method imzaları — field yok</td>
+      </tr>
+      <tr>
+        <td>Default Method</td>
+        <td>Java 8+ <code>default</code> keyword</td>
+        <td>Yok — composition ile çözülür</td>
+      </tr>
+      <tr>
+        <td>Abstract Class Karşılığı</td>
+        <td><code>abstract class</code></td>
+        <td>Yok — interface + embedding ile yaklaşılır</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ===== SECTION 5: DI ===== -->
+  <div class="section" id="di">
+    <div class="section-header">
+      <div class="section-tag">05 / Dependency Injection</div>
+      <div class="section-title">DI — Framework Yok, Interface Yeter</div>
+      <p class="section-desc">Java'da Spring @Autowired ile DI yaparsın. Go'da framework'e ihtiyaç yoktur — interface'ler constructor'a inject edilir.</p>
+    </div>
+
+    <div class="compare-grid">
+      <div class="lang-card java">
+        <div class="lang-card-header"><div class="lang-dot"></div>Java — Spring DI</div>
+        <pre>
+<span class="kw">public interface</span> <span class="type">NotificationService</span> {
+    <span class="kw">void</span> <span class="fn">send</span>(<span class="type">String</span> msg);
+}
+
+<span class="cmt">// Spring bean</span>
+@<span class="type">Service</span>
+<span class="kw">public class</span> <span class="type">EmailService</span>
+        <span class="kw">implements</span> <span class="type">NotificationService</span> {
+    <span class="kw">public void</span> <span class="fn">send</span>(<span class="type">String</span> msg) { ... }
+}
+
+@<span class="type">Service</span>
+<span class="kw">public class</span> <span class="type">OrderService</span> {
+    @<span class="type">Autowired</span>  <span class="cmt">// framework inject eder</span>
+    <span class="kw">private</span> <span class="type">NotificationService</span> notifier;
+}</pre>
+      </div>
+      <div class="lang-card go">
+        <div class="lang-card-header"><div class="lang-dot"></div>Go — Manuel DI (interface ile)</div>
+        <pre>
+<span class="kw">type</span> <span class="type">Notifier</span> <span class="kw">interface</span> {
+    <span class="fn">Send</span>(msg <span class="kw">string</span>) <span class="kw">error</span>
+}
+
+<span class="kw">type</span> <span class="type">EmailService</span> <span class="kw">struct</span>{}
+<span class="kw">func</span> (e <span class="type">EmailService</span>) <span class="fn">Send</span>(msg <span class="kw">string</span>) <span class="kw">error</span> {
+    <span class="cmt">// email gönder...</span>
+    <span class="kw">return nil</span>
+}
+
+<span class="kw">type</span> <span class="type">OrderService</span> <span class="kw">struct</span> {
+    notifier <span class="type">Notifier</span> <span class="cmt">// interface field!</span>
+}
+
+<span class="cmt">// Constructor injection — Spring yok!</span>
+<span class="kw">func</span> <span class="fn">NewOrderService</span>(n <span class="type">Notifier</span>) *<span class="type">OrderService</span> {
+    <span class="kw">return</span> &<span class="type">OrderService</span>{notifier: n}
+}</pre>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-size:18px; margin-bottom:16px; color:#fff;">Test Edilebilirlik — Mock Kolayca Yazılır</h3>
+
+    <div class="lang-card go" style="margin-bottom:20px;">
+      <div class="lang-card-header"><div class="lang-dot"></div>Go — Interface ile Mock (Mockito'ya gerek yok!)</div>
+      <pre>
+<span class="cmt">// Test dosyasında mock tanımı</span>
+<span class="kw">type</span> <span class="type">MockNotifier</span> <span class="kw">struct</span> {
+    SentMessages []<span class="kw">string</span>
+}
+
+<span class="kw">func</span> (m *<span class="type">MockNotifier</span>) <span class="fn">Send</span>(msg <span class="kw">string</span>) <span class="kw">error</span> {
+    m.SentMessages = <span class="fn">append</span>(m.SentMessages, msg)
+    <span class="kw">return nil</span>
+}
+
+<span class="cmt">// Test — gerçek email servisi gerekmez!</span>
+<span class="kw">func</span> <span class="fn">TestOrderService_PlaceOrder</span>(t *<span class="pkg">testing</span>.<span class="type">T</span>) {
+    mock := &<span class="type">MockNotifier</span>{}
+    svc := <span class="fn">NewOrderService</span>(mock) <span class="cmt">// inject!</span>
+
+    svc.<span class="fn">PlaceOrder</span>(<span class="str">"Order #42"</span>)
+
+    <span class="cmt">// Mock'a mesaj geldi mi?</span>
+    <span class="kw">if</span> <span class="fn">len</span>(mock.SentMessages) != <span class="num">1</span> {
+        t.<span class="fn">Fatal</span>(<span class="str">"Expected 1 notification"</span>)
+    }
+}</pre>
+    </div>
+
+    <div class="callout success">
+      <span class="callout-icon">🎯</span>
+      <div><strong>Mockito'ya ihtiyaç yok!</strong> Java'da mock için genellikle Mockito framework'ü kullanırsın. Go'da interface'ler implicit olduğu için, test dosyana sadece birkaç satır struct + method yazarak mock oluşturursun. Dış bağımlılık sıfır, test okunabilirliği maksimum.</div>
+    </div>
+
+    <div class="callout info">
+      <span class="callout-icon">📐</span>
+      <div><strong>Interface Boyutu Felsefesi:</strong> Go kültüründe interface'ler küçük tutulur. Java'da <code>Repository</code> interface'inde 15 method görmek normalken, Go'da genellikle 1-3 method olur. Go standart kütüphanesinin en önemli interface'i <code>io.Reader</code>'dır — sadece 1 method içerir: <code>Read(p []byte) (n int, err error)</code>. Az, daha iyi.</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-size:18px; margin-bottom:20px; color:#fff;">Genel Karşılaştırma Özeti</h3>
+
+    <table class="diff-table">
+      <tr>
+        <th>Kavram</th>
+        <th><span class="tag-java">Java</span></th>
+        <th><span class="tag-go">Go</span></th>
+      </tr>
+      <tr>
+        <td>Class</td>
+        <td><code>class User { ... }</code></td>
+        <td><code>type User struct { ... }</code></td>
+      </tr>
+      <tr>
+        <td>Constructor</td>
+        <td><code>new User()</code></td>
+        <td><code>NewUser()</code> factory func</td>
+      </tr>
+      <tr>
+        <td>this</td>
+        <td>Implicit, her zaman pointer</td>
+        <td>Explicit receiver — <code>*T</code> veya <code>T</code></td>
+      </tr>
+      <tr>
+        <td>Inheritance</td>
+        <td><code>extends</code></td>
+        <td>Yok — struct embedding</td>
+      </tr>
+      <tr>
+        <td>Interface</td>
+        <td>Explicit <code>implements</code></td>
+        <td>Implicit — structural typing</td>
+      </tr>
+      <tr>
+        <td>Abstract Class</td>
+        <td><code>abstract class</code></td>
+        <td>Yok — interface + embedding</td>
+      </tr>
+      <tr>
+        <td>DI Framework</td>
+        <td>Spring, Guice</td>
+        <td>Manuel — interface yeter</td>
+      </tr>
+      <tr>
+        <td>Mock</td>
+        <td>Mockito, EasyMock</td>
+        <td>El yazımı struct (interface sayesinde)</td>
+      </tr>
+      <tr>
+        <td>Generics</td>
+        <td>Java 5+ (2004)</td>
+        <td>Go 1.18+ (2022)</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="footer">
+    <code>go build -o knowledge .</code> &nbsp;·&nbsp; Java → Go transition guide
+  </div>
+
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const pills = document.querySelectorAll('.nav-pill');
+    const map = { structs: 0, composition: 1, methods: 2, interfaces: 3, di: 4 };
+    pills[map[id]].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const p = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('progressBar').style.width = p + '%';
+  });
+</script>
+</body>
+</html>
