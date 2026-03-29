@@ -19,4 +19,7 @@ func main() {
 	fmt.Println("go fonksiyonu çalıştı")
 	waitgroup() // wait group ile yapılan implementasyon için waitgroup.go dosyasına git.
 
+	// peki mesela bir banka hesabı kodu yazdığımızı düşünelim burada veri persistencelığını nasıl sağlayacağız??
+	// bunu da sync.Mutex ile sağlayacağız.
+	mutexlifonks()
 }
