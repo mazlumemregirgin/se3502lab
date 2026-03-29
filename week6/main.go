@@ -22,4 +22,7 @@ func main() {
 	// peki mesela bir banka hesabı kodu yazdığımızı düşünelim burada veri persistencelığını nasıl sağlayacağız??
 	// bunu da sync.Mutex ile sağlayacağız.
 	mutexlifonks()
+
+	// channel ile ilgili implementasyonu görmek için channel.go dosyasına git.
+	chanellifonks()
 }
